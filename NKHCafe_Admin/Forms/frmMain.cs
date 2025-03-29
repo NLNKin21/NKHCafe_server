@@ -128,7 +128,8 @@ namespace NKHCafe_Admin.Forms
         }
         private void menuChat_Click(object sender, EventArgs e)
         {
-            //Mở form chat
+            frmChat frmChat = new frmChat();
+            frmChat.ShowDialog();
         }
 
         private void btnMoMay_Click(object sender, EventArgs e)

@@ -12,24 +12,42 @@ namespace NKHCafe_Admin.ServerCore
     {
         public static void ProcessMessage(string message, NetworkStream stream)
         {
-            if (message.StartsWith("[CHAT]"))
+            if (message.StartsWith("[CHAT]|"))
             {
-                string content = message.Substring(6);
-                Console.WriteLine("[CHAT] " + content);
+                string content = message.Substring(7); // Correct substring index to remove "[CHAT]|"
+                Console.WriteLine($"[CHAT] Received from client: {content}");
 
-                // Gửi phản hồi lại client
-                string response = "[SERVER]: Đã nhận tin nhắn của bạn.";
-                byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-                stream.Write(responseBytes, 0, responseBytes.Length);
+                // Broadcast chat message to all clients including sender (optional, depends on chat app design)
+                ServerManager.Instance.BroadcastMessageToAllClients($"Client: {content}", stream);
             }
-            else if (message.StartsWith("[LOGIN]"))
+            else if (message.StartsWith("[LOGIN]|"))
             {
-                // Xử lý đăng nhập
+                // Xử lý đăng nhập (chưa triển khai)
+                string content = message.Substring(7);
+                Console.WriteLine($"[LOGIN] Request received: {content}");
+                // ... Login logic ...
+                SendResponse(stream, "LOGIN_RESPONSE", "OK", "Login feature not implemented yet.");
             }
-            else if (message.StartsWith("[ORDER]"))
+            else if (message.StartsWith("[ORDER]|"))
             {
-                // Xử lý đặt món
+                // Xử lý đặt món (chưa triển khai)
+                string content = message.Substring(7);
+                Console.WriteLine($"[ORDER] Request received: {content}");
+                // ... Order logic ...
+                SendResponse(stream, "ORDER_RESPONSE", "ERROR", "Order feature not implemented yet.");
             }
+            else
+            {
+                Console.WriteLine($"[UNKNOWN MESSAGE] Received: {message}");
+                SendResponse(stream, "UNKNOWN_RESPONSE", "ERROR", "Unknown message type.");
+            }
+        }
+
+        private static void SendResponse(NetworkStream stream, string messageType, string status, string message)
+        {
+            string response = $"[{messageType}]|{status}|{message}";
+            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
+            stream.Write(responseBytes, 0, responseBytes.Length);
         }
     }
 }

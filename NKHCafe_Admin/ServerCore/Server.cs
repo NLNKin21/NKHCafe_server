@@ -19,6 +19,7 @@ namespace NKHCafe_Admin.ServerCore
             _listener = new TcpListener(IPAddress.Parse(ip), port);
             _listener.Start();
             _isRunning = true;
+            ServerManager.Instance.ServerInstance = this; // Register server instance with ServerManager
 
             Console.WriteLine($"[SERVER] Đang lắng nghe tại {ip}:{port}");
 
@@ -30,6 +31,7 @@ namespace NKHCafe_Admin.ServerCore
                 ClientHandler handler = new ClientHandler(client);
                 Thread clientThread = new Thread(handler.HandleClient);
                 clientThread.Start();
+                ServerManager.Instance.AddClient(client); // Add client to ServerManager's list
             }
         }
 
@@ -37,6 +39,13 @@ namespace NKHCafe_Admin.ServerCore
         {
             _isRunning = false;
             _listener.Stop();
+            ServerManager.Instance.ClearClients(); // Clear client list on server stop
+            ServerManager.Instance.ServerInstance = null; // Deregister server instance
+        }
+
+        public void BroadcastMessage(string message, NetworkStream excludeStream = null)
+        {
+            ServerManager.Instance.BroadcastMessageToAllClients(message, excludeStream);
         }
     }
 }

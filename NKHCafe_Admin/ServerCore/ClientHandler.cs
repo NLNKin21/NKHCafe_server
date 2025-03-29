@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Sockets;
-using System.Text;
 using NKHCafe_Admin.Utils;
 
 namespace NKHCafe_Admin.ServerCore
@@ -31,6 +30,7 @@ namespace NKHCafe_Admin.ServerCore
                     if (bytesRead == 0) break;
 
                     string message = Encoding.UTF8.GetString(buffer, 0, bytesRead);
+                    Logger.Log($"[CLIENT] Received raw message: {message}"); // **THÊM LOG RAW MESSAGE**
                     Logger.Log($"[CLIENT] {message}");
 
                     // Gửi message xử lý
@@ -43,6 +43,7 @@ namespace NKHCafe_Admin.ServerCore
                 }
             }
 
+            ServerManager.Instance.RemoveClient(_client); // Remove client from ServerManager list
             Logger.Log("[SERVER] Client ngắt kết nối.");
             _client.Close();
         }
