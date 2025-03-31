@@ -51,6 +51,7 @@
             this.rtbChatLog.Size = new System.Drawing.Size(650, 307);
             this.rtbChatLog.TabIndex = 0;
             this.rtbChatLog.Text = "";
+            this.rtbChatLog.TextChanged += new System.EventHandler(this.rtbChatLog_TextChanged);
             // 
             // txtMessage
             // 
@@ -60,6 +61,7 @@
             this.txtMessage.Name = "txtMessage";
             this.txtMessage.Size = new System.Drawing.Size(569, 26);
             this.txtMessage.TabIndex = 1;
+            this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
             // 
             // btnSend
             // 
@@ -80,7 +82,6 @@
             this.lblStatus.Size = new System.Drawing.Size(94, 20);
             this.lblStatus.TabIndex = 3;
             this.lblStatus.Text = "Trạng thái: ";
-            //this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
             // 
             // btnStartServer
             // 
@@ -121,7 +122,6 @@
             this.label2.Size = new System.Drawing.Size(83, 20);
             this.label2.TabIndex = 7;
             this.label2.Text = "Server IP:";
-            //this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // txtServerIP
             // 

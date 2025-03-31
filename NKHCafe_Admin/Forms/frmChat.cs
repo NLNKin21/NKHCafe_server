@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using NKHCafe_Admin.Models;
 using NKHCafe_Admin.ServerCore;
 using NKHCafe_Admin.Utils;
 
@@ -19,18 +20,18 @@ namespace NKHCafe_Admin.Forms
     public partial class frmChat : System.Windows.Forms.Form
     {
         private Server _server;
-        private const int ServerPort = 12345; // Default server port
         private const string DefaultServerIP = "127.0.0.1"; // Or use IPAddress.Any.ToString() for all IPs
 
         public frmChat()
         {
             InitializeComponent();
             _server = new Server();
+          
         }
 
         private void frmChatServer_Load(object sender, EventArgs e)
         {
-            txtServerPort.Text = ServerPort.ToString();
+            txtServerPort.Text = Utils.Config.ServerPort.ToString();
             lblStatus.Text = "Trạng thái: Chưa khởi động";
             btnStartServer.Text = "Khởi động Server";
             txtServerIP.Text = DefaultServerIP; // Set default IP
@@ -40,7 +41,7 @@ namespace NKHCafe_Admin.Forms
         {
             if (_server == null || !_server.GetType().GetField("_isRunning", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).GetValue(_server).Equals(true))
             {
-                await Task.Run(() => StartServer()); // Chạy StartServer trên luồng nền bằng Task.Run
+                await StartServerAsync();
             }
             else
             {
@@ -48,7 +49,7 @@ namespace NKHCafe_Admin.Forms
             }
         }
 
-        private void StartServer()
+        private async Task StartServerAsync()
         {
             string serverIP = txtServerIP.Text.Trim();
             int serverPort;
@@ -61,7 +62,7 @@ namespace NKHCafe_Admin.Forms
             AppendToChatLog("Khởi động server...");
             try
             {
-                _server.Start(serverIP, serverPort);
+                await _server.StartAsync(serverIP, serverPort);
                 UpdateServerStatus(true);
                 Debug.WriteLine("[SERVER UI] UpdateServerStatus(true) đã được gọi."); // **THÊM DÒNG DEBUG NÀY**
                 AppendToChatLog($"Server đã khởi động trên {serverIP}:{serverPort}");
@@ -114,29 +115,33 @@ namespace NKHCafe_Admin.Forms
         }
 
 
-        private delegate void AppendToChatLogDelegate(string text);
-        private void AppendToChatLog(string text)
+        public void AppendToChatLog(string text)
         {
-            if (rtbChatLog.InvokeRequired)
-            {
+            if (rtbChatLog.IsDisposed || this.IsDisposed) return;
+            Action appendAction = () => {
                 if (!rtbChatLog.IsDisposed)
-                {
-                    rtbChatLog.Invoke(new AppendToChatLogDelegate(AppendToChatLog), text);
-                }
-            }
-            else
-            {
-                if (!rtbChatLog.IsDisposed)
-                {
+                { // Double check inside UI thread
                     rtbChatLog.AppendText(text + Environment.NewLine);
                     rtbChatLog.ScrollToCaret();
                 }
+            };
+
+            if (rtbChatLog.InvokeRequired)
+            {
+                try { rtbChatLog.Invoke(appendAction); } catch { /* Ignore disposed */ }
             }
+            else { appendAction(); }
         }
 
         private void btnSend_Click(object sender, EventArgs e)
         {
-            SendMessageToAll();
+            string message = txtMessage.Text.Trim();
+            if (!string.IsNullOrEmpty(message))
+            {
+                ServerManager.Instance.BroadcastAdminMessage(message);
+                AppendToChatLog(message);
+                txtMessage.Clear();
+            }
         }
 
         private void SendMessageToAll()
@@ -162,6 +167,14 @@ namespace NKHCafe_Admin.Forms
             StopServer(); // Stop server when form closes
         }
 
-        
+        private void txtMessage_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void rtbChatLog_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

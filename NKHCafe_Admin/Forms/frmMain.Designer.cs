@@ -50,6 +50,7 @@
             this.btnMoMay = new System.Windows.Forms.Button();
             this.btnTatMay = new System.Windows.Forms.Button();
             this.btnTinhTien = new System.Windows.Forms.Button();
+            this.menuYeuCau = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panelMayTram.SuspendLayout();
             this.SuspendLayout();
@@ -62,7 +63,8 @@
             this.menuQuanLy,
             this.menuGiaoDich,
             this.menuThongKe,
-            this.menuChat});
+            this.menuChat,
+            this.menuYeuCau});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1067, 28);
@@ -83,21 +85,21 @@
             // menuDangNhap
             // 
             this.menuDangNhap.Name = "menuDangNhap";
-            this.menuDangNhap.Size = new System.Drawing.Size(224, 26);
+            this.menuDangNhap.Size = new System.Drawing.Size(165, 26);
             this.menuDangNhap.Text = "Đăng nhập";
             this.menuDangNhap.Click += new System.EventHandler(this.menuDangNhap_Click);
             // 
             // menuDangXuat
             // 
             this.menuDangXuat.Name = "menuDangXuat";
-            this.menuDangXuat.Size = new System.Drawing.Size(224, 26);
+            this.menuDangXuat.Size = new System.Drawing.Size(165, 26);
             this.menuDangXuat.Text = "Đăng xuất";
             this.menuDangXuat.Click += new System.EventHandler(this.menuDangXuat_Click);
             // 
             // menuThoat
             // 
             this.menuThoat.Name = "menuThoat";
-            this.menuThoat.Size = new System.Drawing.Size(224, 26);
+            this.menuThoat.Size = new System.Drawing.Size(165, 26);
             this.menuThoat.Text = "Thoát";
             this.menuThoat.Click += new System.EventHandler(this.menuThoat_Click);
             // 
@@ -253,6 +255,13 @@
             this.btnTinhTien.UseVisualStyleBackColor = true;
             this.btnTinhTien.Click += new System.EventHandler(this.btnTinhTien_Click);
             // 
+            // menuYeuCau
+            // 
+            this.menuYeuCau.Name = "menuYeuCau";
+            this.menuYeuCau.Size = new System.Drawing.Size(75, 24);
+            this.menuYeuCau.Text = "Yêu Cầu";
+            this.menuYeuCau.Click += new System.EventHandler(this.menuYeuCau_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -297,5 +306,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ToolStripMenuItem menuYeuCau;
     }
 }

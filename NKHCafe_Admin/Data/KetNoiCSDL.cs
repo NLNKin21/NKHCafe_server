@@ -6,7 +6,7 @@ using System.Windows.Forms; // Thêm using này để dùng MessageBox
 
 namespace NKHCafe_Admin.DAO
 {
-    public static class KetNoiCSDL
+    internal static class KetNoiCSDL
     {
         private static string connectionString = @"Data Source=LAPTOP-5V6TA3CH\NGUYENLONGNHAT;Initial Catalog=QLTiemNET;Integrated Security=True";
 

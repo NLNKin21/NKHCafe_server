@@ -51,8 +51,8 @@ namespace NKHCafe_Admin.DAO
 
         public static bool MoMay(int idMay, int idTaiKhoan)
         {
-            // Chỉ mở máy nếu máy đang ở trạng thái 'Sẵn sàng' hoặc 'Không hoạt động'
-            string query = "UPDATE MayTram SET TrangThai = N'Đang sử dụng', IDTaiKhoan = @IDTaiKhoan, ThoiGianBatDau = GETDATE() WHERE IDMay = @IDMay AND (TrangThai = N'Sẵn sàng' OR TrangThai = N'Không hoạt động')";
+            // Chỉ mở máy nếu máy đang ở trạng thái 'Không hoạt động'
+            string query = "UPDATE MayTram SET TrangThai = N'Trong', IDTaiKhoan = @IDTaiKhoan, ThoiGianBatDau = GETDATE() WHERE IDMay = @IDMay AND (TrangThai = N'Trong')";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@IDTaiKhoan", idTaiKhoan),
@@ -74,7 +74,7 @@ namespace NKHCafe_Admin.DAO
         public static bool TatMay(int idMay)
         {
             // Chỉ tắt máy nếu máy đang ở trạng thái 'Đang sử dụng'
-            string query = "UPDATE MayTram SET TrangThai = N'Sẵn sàng', IDTaiKhoan = NULL, ThoiGianBatDau = NULL WHERE IDMay = @IDMay AND TrangThai = N'Đang sử dụng'";
+            string query = "UPDATE MayTram SET TrangThai = N'Trong', IDTaiKhoan = NULL, ThoiGianBatDau = NULL WHERE IDMay = @IDMay AND TrangThai = N'Ban'";
             SqlParameter[] parameters = new SqlParameter[]
             {
                 new SqlParameter("@IDMay", idMay)

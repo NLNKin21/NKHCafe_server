@@ -8,7 +8,11 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.IO; // Thêm cho logging
+using System.IO;
+using NKHCafe_Admin.ServerCore; // Thêm cho logging
+using NKHCafe_Admin.Forms;
+using NKHCafe_Admin.Models;
+
 
 namespace NKHCafe_Admin.Forms
 {
@@ -19,14 +23,14 @@ namespace NKHCafe_Admin.Forms
         private string _loaiTaiKhoan;
         private TcpListener _server;
         private bool _serverRunning;
-        private const int ServerPort = 12345; // Đặt cổng cố định
-        private const string ServerIP = "127.0.0.1"; // Địa chỉ IP localhost
         private readonly string _logFilePath = "server_log.txt"; // Đường dẫn tệp log
-
+        internal Form MainForm; // Đúng kiểu để gọi Invoke
 
         public frmMain(int idTaiKhoan, string tenDangNhap, string loaiTaiKhoan)
         {
             InitializeComponent();
+            ServerManager.Instance.MainForm = this;
+
             _idTaiKhoan = idTaiKhoan;
             _tenDangNhap = tenDangNhap;
             _loaiTaiKhoan = loaiTaiKhoan;
@@ -42,7 +46,7 @@ namespace NKHCafe_Admin.Forms
             // Có thể thêm các tác vụ khởi tạo ở đây (nếu cần)
         }
 
-        private void LoadMayTram()
+        public void LoadMayTram()
         {
             try
             {
@@ -128,8 +132,8 @@ namespace NKHCafe_Admin.Forms
         }
         private void menuChat_Click(object sender, EventArgs e)
         {
-            frmChat frmChat = new frmChat();
-            frmChat.ShowDialog();
+            Models.FormManager.ChatFormInstance = new frmChat();
+            Models.FormManager.ChatFormInstance.Show();
         }
 
         private void btnMoMay_Click(object sender, EventArgs e)
@@ -218,6 +222,8 @@ namespace NKHCafe_Admin.Forms
             if (_server != null)
             {
                 _server.Stop();
+                _server.Server.Close(); // Đảm bảo socket được đóng hẳn
+                _server = null;
             }
         }
 
@@ -225,11 +231,15 @@ namespace NKHCafe_Admin.Forms
         {
             try
             {
-                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, ServerPort);
+                IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Any, Utils.Config.ServerPort);
                 _server = new TcpListener(ipEndPoint);
+
+                // ✅ Fix lỗi "Only one usage..." bằng cách bật ReuseAddress
+                _server.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
                 _server.Start();
 
-                Log($"Server started. Listening on port {ServerPort}...");
+                Log($"Server started. Listening on port {Utils.Config.ServerPort}...");
 
                 while (_serverRunning)
                 {
@@ -350,7 +360,7 @@ namespace NKHCafe_Admin.Forms
         {
             try
             {
-                using (TcpClient client = new TcpClient(ServerIP, ServerPort))
+                using (TcpClient client = new TcpClient(Utils.Config.ServerIP, Utils.Config.ServerPort))
                 using (NetworkStream stream = client.GetStream())
                 {
                     string message = $"{command}:{idMay}";
@@ -404,6 +414,12 @@ namespace NKHCafe_Admin.Forms
         private void menuHeThong_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void menuYeuCau_Click(object sender, EventArgs e)
+        {
+            frmYeuCau frm = new frmYeuCau();
+            frm.ShowDialog();
         }
     }
 }

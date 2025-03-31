@@ -64,6 +64,7 @@
             this.dgvMayTram.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvMayTram.Size = new System.Drawing.Size(690, 200);
             this.dgvMayTram.TabIndex = 0;
+            this.dgvMayTram.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvMayTram_CellContentClick);
             // 
             // txtIDMay
             // 

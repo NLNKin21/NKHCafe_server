@@ -269,6 +269,11 @@ namespace NKHCafe_Admin.Forms
 
         }
 
+        private void dgvMayTram_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
         // Các event handler khác (nếu có) không cần thay đổi
     }
 }

@@ -1,5 +1,4 @@
-﻿using DevExpress.XtraEditors;
-using System;
+﻿using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -8,7 +7,7 @@ using NKHCafe_Admin.DTO;
 
 namespace NKHCafe_Admin.Forms
 {
-    public partial class frmDangNhap : DevExpress.XtraEditors.XtraForm
+    public partial class frmDangNhap : Form
     {
         public frmDangNhap()
         {
@@ -22,14 +21,14 @@ namespace NKHCafe_Admin.Forms
 
             if (string.IsNullOrEmpty(tenDangNhap) || string.IsNullOrEmpty(matKhau))
             {
-                XtraMessageBox.Show("Vui lòng nhập tên đăng nhập và mật khẩu.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Vui lòng nhập tên đăng nhập và mật khẩu.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             // Nếu là admin hardcode
             if (tenDangNhap == "admin" && matKhau == "123")
             {
-                XtraMessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OpenUserForm(-1, tenDangNhap, "Admin"); // -1 ID vì không lấy từ DB
                 return;
             }
@@ -37,12 +36,12 @@ namespace NKHCafe_Admin.Forms
             TaiKhoan tk = TaiKhoanDAO.KiemTraDangNhap(tenDangNhap, matKhau);
             if (tk != null)
             {
-                XtraMessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Đăng nhập thành công!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 OpenUserForm(tk.ID, tk.TenDangNhap, tk.LoaiTaiKhoan);
             }
             else
             {
-                XtraMessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Sai tên đăng nhập hoặc mật khẩu!", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 txtMatKhau.Clear();
                 txtMatKhau.Focus();
             }
@@ -59,7 +58,7 @@ namespace NKHCafe_Admin.Forms
             }
             else
             {
-                XtraMessageBox.Show($"Chức năng cho loại tài khoản '{loaiTaiKhoan}' đang phát triển!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Chức năng cho loại tài khoản '{loaiTaiKhoan}' đang phát triển!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Show();
             }
             FormClosed += (s, args) => this.Close(); // Đảm bảo đóng form DangNhap khi form Main đóng.

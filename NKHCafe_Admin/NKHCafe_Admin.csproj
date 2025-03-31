@@ -105,6 +105,13 @@
       <DependentUpon>frmThongKe.cs</DependentUpon>
     </Compile>
     <Compile Include="Data\KetNoiCSDL.cs" />
+    <Compile Include="Forms\frmYeuCau.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmYeuCau.Designer.cs">
+      <DependentUpon>frmYeuCau.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\FormManager.cs" />
     <Compile Include="Models\MayTram.cs" />
     <Compile Include="Data\MayTramDAO.cs" />
     <Compile Include="Forms\frmTinhTien.cs">
@@ -123,6 +130,7 @@
     <Compile Include="ServerCore\ServerManager.cs" />
     <Compile Include="Utils\Config.cs" />
     <Compile Include="Utils\Logger.cs" />
+    <Compile Include="Utils\MessageHandler.cs" />
     <EmbeddedResource Include="Forms\frmChat.resx">
       <DependentUpon>frmChat.cs</DependentUpon>
     </EmbeddedResource>
@@ -149,6 +157,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmTinhTien.resx">
       <DependentUpon>frmTinhTien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmYeuCau.resx">
+      <DependentUpon>frmYeuCau.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
