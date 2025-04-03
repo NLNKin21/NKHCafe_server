@@ -47,7 +47,7 @@ namespace NKHCafe_Admin.Forms
                     connection.Open();
 
                     // Kiểm tra tài khoản có tồn tại không
-                    string checkAccountQuery = "SELECT COUNT(*) FROM TaiKhoan WHERE TenDangNhapTK = @TaiKhoan";
+                    string checkAccountQuery = "SELECT COUNT(*) FROM TaiKhoan WHERE TenDangNhap = @TaiKhoan";
                     using (SqlCommand checkAccountCmd = new SqlCommand(checkAccountQuery, connection))
                     {
                         checkAccountCmd.Parameters.AddWithValue("@TaiKhoan", taiKhoan);
@@ -60,7 +60,7 @@ namespace NKHCafe_Admin.Forms
                     }
 
                     // Cập nhật số dư
-                    string updateBalanceQuery = "UPDATE TaiKhoan SET SoDuTK = SoDuTK + @SoTienNap WHERE TenDangNhapTK = @TaiKhoan";
+                    string updateBalanceQuery = "UPDATE TaiKhoan SET SoDu = SoDu + @SoTienNap WHERE TenDangNhap = @TaiKhoan";
                     using (SqlCommand updateCmd = new SqlCommand(updateBalanceQuery, connection))
                     {
                         updateCmd.Parameters.AddWithValue("@SoTienNap", soTien);

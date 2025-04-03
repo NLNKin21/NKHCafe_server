@@ -78,15 +78,6 @@ namespace NKHCafe_Admin.Forms
             }
         }
 
-        // Event Handlers
-        private void menuDangNhap_Click(object sender, EventArgs e)
-        {
-            StopServer();
-            frmDangNhap frm = new frmDangNhap();
-            frm.Show();
-            this.Hide();
-        }
-
         private void menuDangXuat_Click(object sender, EventArgs e)
         {
             StopServer();
@@ -216,7 +207,8 @@ namespace NKHCafe_Admin.Forms
             serverThread.Start();
         }
 
-        private void StopServer()
+      
+  private void StopServer()
         {
             _serverRunning = false;
             if (_server != null)
@@ -226,7 +218,6 @@ namespace NKHCafe_Admin.Forms
                 _server = null;
             }
         }
-
         private void ServerThread()
         {
             try
@@ -254,7 +245,6 @@ namespace NKHCafe_Admin.Forms
             {
                 string errorMessage = $"Socket exception: {ex.Message}";
                 Log(errorMessage);
-                MessageBox.Show(errorMessage, "Lỗi Socket", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -420,6 +410,20 @@ namespace NKHCafe_Admin.Forms
         {
             frmYeuCau frm = new frmYeuCau();
             frm.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                LoadMayTram(); // Gọi hàm load lại danh sách máy
+                Log("Danh sách máy trạm đã được làm mới.");
+            }
+            catch (Exception ex)
+            {
+                Log($"Lỗi khi làm mới máy trạm: {ex.Message}");
+                MessageBox.Show("Đã xảy ra lỗi khi làm mới danh sách máy trạm.", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

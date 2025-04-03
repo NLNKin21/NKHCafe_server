@@ -54,6 +54,10 @@ namespace NKHCafe_Admin.Forms
             if (loaiTaiKhoan == "Admin")
             {
                 frmMain frm = new frmMain(idTaiKhoan, tenDangNhap, loaiTaiKhoan);
+
+                // Gán sự kiện đóng frmMain thì cũng đóng form hiện tại (form đăng nhập)
+                frm.FormClosed += (s, args) => this.Close();
+
                 frm.Show();
             }
             else
@@ -61,7 +65,6 @@ namespace NKHCafe_Admin.Forms
                 MessageBox.Show($"Chức năng cho loại tài khoản '{loaiTaiKhoan}' đang phát triển!", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.Show();
             }
-            FormClosed += (s, args) => this.Close(); // Đảm bảo đóng form DangNhap khi form Main đóng.
         }
 
         private void btnThoat_Click(object sender, EventArgs e)

@@ -21,65 +21,7 @@ namespace NKHCafe_Admin.Forms
             dtpTuNgay.Value = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
         }
 
-        private void btnThongKe_Click(object sender, EventArgs e)
-        {
-            DateTime tuNgay = dtpTuNgay.Value.Date; // Lấy phần ngày, bỏ qua phần giờ
-            DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1); // Lấy đến 23:59:59 của ngày được chọn
-
-            // TODO:  Kết nối và truy vấn dữ liệu từ database
-            string connectionString = "your_connection_string"; // Thay bằng chuỗi kết nối
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    connection.Open();
-
-                    // Truy vấn dữ liệu thống kê
-                    string query = @"
-                SELECT 
-                    ngay_giao_dich,
-                    SUM(tong_tien) AS TongTien
-                FROM 
-                    GiaoDich -- Thay GiaoDich bằng tên bảng chứa thông tin giao dịch của bạn
-                WHERE 
-                    ngay_giao_dich >= @TuNgay AND ngay_giao_dich <= @DenNgay
-                GROUP BY
-                    ngay_giao_dich
-                ORDER BY
-                    ngay_giao_dich";
-
-                    using (SqlCommand command = new SqlCommand(query, connection))
-                    {
-                        command.Parameters.AddWithValue("@TuNgay", tuNgay);
-                        command.Parameters.AddWithValue("@DenNgay", denNgay);
-
-                        DataTable dtThongKe = new DataTable();
-                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
-                        {
-                            adapter.Fill(dtThongKe);
-                        }
-
-                        dgvThongKe.DataSource = dtThongKe;
-                        // Đặt tên cột (nếu cần)
-                        dgvThongKe.Columns["ngay_giao_dich"].HeaderText = "Ngày Giao Dịch";
-                        dgvThongKe.Columns["TongTien"].HeaderText = "Tổng Tiền";
-
-                        // Tính tổng doanh thu
-                        decimal tongDoanhThu = 0;
-                        foreach (DataRow row in dtThongKe.Rows)
-                        {
-                            tongDoanhThu += (decimal)row["TongTien"];
-                        }
-                        lblTongDoanhThu.Text = "Tổng Doanh Thu: " + tongDoanhThu.ToString("C"); // Định dạng tiền tệ
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Lỗi: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
+        
         private void dgvThongKe_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
@@ -88,6 +30,77 @@ namespace NKHCafe_Admin.Forms
         private void lblTongDoanhThu_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnThongKe_Click(object sender, EventArgs e)
+        {
+            DateTime tuNgay = dtpTuNgay.Value.Date;
+            DateTime denNgay = dtpDenNgay.Value.Date.AddDays(1).AddTicks(-1); // đến cuối ngày được chọn
+
+            string connectionString = @"Data Source=LAPTOP-5V6TA3CH\NGUYENLONGNHAT;Initial Catalog=QLTiemNET;Integrated Security=True";
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+
+                    // 1. Thống kê tổng tiền theo từng máy từ HoaDon
+                    string queryTongTienMay = @"
+                SELECT 
+                    IDMay AS [Máy], 
+                    SUM(TongTien) AS [Tổng Tiền Máy]
+                FROM HoaDon
+                WHERE ThoiGianBatDau BETWEEN @TuNgay AND @DenNgay
+                GROUP BY IDMay
+                ORDER BY IDMay";
+
+                    DataTable dtThongKe = new DataTable();
+                    using (SqlCommand cmd = new SqlCommand(queryTongTienMay, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@TuNgay", tuNgay);
+                        cmd.Parameters.AddWithValue("@DenNgay", denNgay);
+
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                        {
+                            adapter.Fill(dtThongKe);
+                        }
+                    }
+
+                    dgvThongKe.DataSource = dtThongKe;
+
+                    decimal tongTienMay = 0;
+                    foreach (DataRow row in dtThongKe.Rows)
+                    {
+                        tongTienMay += Convert.ToDecimal(row["Tổng Tiền Máy"]);
+                    }
+
+                    // 2. Tổng tiền món
+                    string queryTongTienMon = @"
+    SELECT SUM(ThanhTien)
+    FROM ChiTietHoaDon
+    WHERE ThoiGianDatMon BETWEEN @TuNgay AND @DenNgay";
+
+                    decimal tongTienMon = 0;
+                    using (SqlCommand cmd = new SqlCommand(queryTongTienMon, connection))
+                    {
+                        cmd.Parameters.AddWithValue("@TuNgay", tuNgay);
+                        cmd.Parameters.AddWithValue("@DenNgay", denNgay);
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != DBNull.Value && result != null)
+                            tongTienMon = Convert.ToDecimal(result);
+                    }
+
+                    // 3. Hiển thị tổng cộng
+                    decimal tongCong = tongTienMay + tongTienMon;
+                    lblTongDoanhThu.Text = $"🖥 Máy: {tongTienMay.ToString("C")} | 🍽 Món: {tongTienMon.ToString("C")} | 💰 Tổng: {tongCong.ToString("C")}";
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi khi thống kê: " + ex.Message, "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }
